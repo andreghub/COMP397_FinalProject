@@ -1,4 +1,4 @@
-(function (window) {
+(function(window) {
 
     window.game = window.game || {}
 
@@ -14,14 +14,14 @@
     p.nextY = null;
     p.shouldDie = false;
 
-    p.initialize = function () {
+    p.initialize = function() {
         this.Sprite_initialize(spritesheet, "bullet");
         this.paused = true;
         this.rotation = 90;
-    }
-    p.reset = function () {
+    };
+    p.reset = function() {
         this.shouldDie = false;
-    }
+    };
 
     window.game.Bullet = Bullet;
 

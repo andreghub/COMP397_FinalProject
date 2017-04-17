@@ -106,12 +106,12 @@
         this.disposeCurrentScene();
         this.currentScene = scene;
         this.changeState(game.GameStates.RUN_SCENE);
-    }
+    };
     p.gameStateRunScene = function(tickEvent) {
         if (this.currentScene.run) {
             this.currentScene.run(tickEvent);
         }
-    }
+    };
     p.onTick = function(e) {
         if (this.currentGameStateFunction != null) {
             this.currentGameStateFunction(e);

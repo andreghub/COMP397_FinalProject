@@ -1,4 +1,4 @@
-(function (window) {
+(function(window) {
 
     window.game = window.game || {}
 
@@ -45,7 +45,7 @@
     p.upKeyDown = false;
     p.downKeyDown = false;
 
-    p.initialize = function () {
+    p.initialize = function() {
         this.Container_initialize();
         this.setProperties();
         this.buildStarField();
@@ -53,8 +53,8 @@
         this.setWalls();
         this.setControls();
         createjs.Sound.play(game.assets.SOUNDTRACK);
-    }
-    p.setProperties = function () {
+    };
+    p.setProperties = function() {
         this.heroBulletPool = [];
         this.heroBullets = [];
         this.enemyPool = [];
@@ -65,8 +65,8 @@
         this.explosionPool = [];
         this.betweenLevels = false;
         this.enemyLastSpawnTime = 0;
-    }
-    p.buildStarField = function () {
+    };
+    p.buildStarField = function() {
         var star;
         var numStars = 20;
         for (i = 0; i < numStars; i++) {
@@ -77,8 +77,8 @@
             this.addChild(star);
             this.stars.push(star);
         }
-    }
-    p.buildSprites = function () {
+    };
+    p.buildSprites = function() {
         this.heroShip = new game.HeroShip();
         this.heroShip.on(this.heroShip.EXPLOSION_COMPLETE, this.checkGame, this);
         this.heroShip.x = this.heroShip.getBounds().height / 2;
@@ -91,19 +91,19 @@
         this.scoreboard = new game.Scoreboard();
         this.lifeBox = new game.LifeBox(this.numLives);
         this.addChild(this.heroShip, this.healthMeter, this.scoreboard, this.lifeBox);
-    }
-    p.setWalls = function () {
+    };
+    p.setWalls = function() {
         this.leftWall = this.heroShip.getBounds().height / 2;
         this.rightWall = (this.heroShip.getBounds().height * 3);
         this.floor = screen_height - this.heroShip.getBounds().width / 2;
         this.ceiling = this.heroShip.getBounds().width / 2;
-    }
-    p.setControls = function () {
+    };
+    p.setControls = function() {
         document.onkeydown = this.handleKeyDown.bind(this);
         document.onkeyup = this.handleKeyUp.bind(this);
 
-    }
-    p.handleKeyDown = function (e) {
+    };
+    p.handleKeyDown = function(e) {
         e = !e ? window.event : e;
         switch (e.keyCode) {
             case ARROW_KEY_LEFT:
@@ -118,9 +118,17 @@
             case ARROW_KEY_DOWN:
                 this.downKeyDown = true;
                 break;
+            case SPACE_KEY:
+                this.spawnHeroBullet();
+                break;
+            case F_KEY:
+                this.spawnHeroBullet();
+                break;
+            default:
+                console.log('key down', e.keyCode);
         }
-    }
-    p.handleKeyUp = function (e) {
+    };
+    p.handleKeyUp = function(e) {
         e = !e ? window.event : e;
         switch (e.keyCode) {
             case ARROW_KEY_LEFT:
@@ -129,23 +137,22 @@
             case ARROW_KEY_RIGHT:
                 this.rightKeyDown = false;
                 break;
-            case ARROW_KEY_SPACE:
-                this.spawnHeroBullet();
-                break;
             case ARROW_KEY_UP:
                 this.upKeyDown = false;
                 break;
             case ARROW_KEY_DOWN:
                 this.downKeyDown = false;
                 break;
+            default:
+                console.log('key up', e.keyCode);
         }
-    }
+    };
     /*
      *
      * UPDATE FUNCTIONS
      *
      */
-    p.updateStars = function () {
+    p.updateStars = function() {
         var i, star, velX, speed, nextX;
         var len = this.stars.length;
         for (i = 0; i < len; i++) {
@@ -157,8 +164,8 @@
             }
             star.nextX = nextX;
         }
-    }
-    p.updateHeroShip = function () {
+    };
+    p.updateHeroShip = function() {
         var velocity = this.heroShip.speed * this.delta / 1000;
         var nextX = this.heroShip.x;
         var nextY = this.heroShip.y;
@@ -167,20 +174,17 @@
             if (nextX < this.leftWall) {
                 nextX = this.leftWall;
             }
-        }
-        else if (this.rightKeyDown) {
+        } else if (this.rightKeyDown) {
             nextX += velocity;
             if (nextX > this.rightWall) {
                 nextX = this.rightWall;
             }
-        }
-        else if (this.downKeyDown) {
+        } else if (this.downKeyDown) {
             nextY += velocity;
             if (nextY > this.floor) {
                 nextY = this.floor;
             }
-        }
-        else if (this.upKeyDown) {
+        } else if (this.upKeyDown) {
             nextY -= velocity;
             if (nextY < this.ceiling) {
                 nextY = this.ceiling;
@@ -188,8 +192,8 @@
         }
         this.heroShip.nextX = nextX;
         this.heroShip.nextY = nextY;
-    }
-    p.updateEnemies = function () {
+    };
+    p.updateEnemies = function() {
         var enemy, i, velX;
         var len = this.enemies.length - 1;
         for (i = len; i >= 0; i--) {
@@ -203,8 +207,8 @@
                 this.enemies.splice(i, 1);
             }
         }
-    }
-    p.updateHeroBullets = function () {
+    };
+    p.updateHeroBullets = function() {
         var bullet, i, velX;
         var len = this.heroBullets.length - 1;
         for (i = len; i >= 0; i--) {
@@ -217,8 +221,8 @@
                 this.heroBullets.splice(i, 1);
             }
         }
-    }
-    p.updateEnemyBullets = function () {
+    };
+    p.updateEnemyBullets = function() {
         var bullet, i, velX;
         var len = this.enemyBullets.length - 1;
         for (i = len; i >= 0; i--) {
@@ -231,24 +235,24 @@
                 this.enemyBullets.splice(i, 1);
             }
         }
-    }
+    };
     /*
      *
      * RENDER FUNCTIONS
      *
      */
-    p.renderStars = function () {
+    p.renderStars = function() {
         var i, star;
         for (i = 0; i < this.stars.length; i++) {
             star = this.stars[i];
             star.y = star.nextY;
         }
-    }
-    p.renderHeroShip = function () {
+    };
+    p.renderHeroShip = function() {
         this.heroShip.x = this.heroShip.nextX;
         this.heroShip.y = this.heroShip.nextY;
-    }
-    p.renderHeroBullets = function () {
+    };
+    p.renderHeroBullets = function() {
         var bullet, i;
         var len = this.heroBullets.length - 1;
         for (i = len; i >= 0; i--) {
@@ -258,13 +262,12 @@
                 bullet.reset();
                 this.heroBulletPool.returnSprite(bullet);
                 this.heroBullets.splice(i, 1);
-            }
-            else {
+            } else {
                 bullet.x = bullet.nextX;
             }
         }
-    }
-    p.renderEnemyBullets = function () {
+    };
+    p.renderEnemyBullets = function() {
         var bullet, i;
         var len = this.enemyBullets.length - 1;
         for (i = len; i >= 0; i--) {
@@ -274,13 +277,12 @@
                 bullet.reset();
                 this.enemyBulletPool.returnSprite(bullet);
                 this.enemyBullets.splice(i, 1);
-            }
-            else {
+            } else {
                 bullet.x = bullet.nextX;
             }
         }
-    }
-    p.renderEnemies = function () {
+    };
+    p.renderEnemies = function() {
         var enemy, i;
         var len = this.enemies.length - 1;
         for (i = len; i >= 0; i--) {
@@ -292,24 +294,23 @@
                 this.spawnEnemyExplosion(enemy.x, enemy.y);
                 enemy.reset();
                 this.enemyPool.returnSprite(enemy);
-            }
-            else {
+            } else {
                 enemy.x = enemy.nextX;
             }
         }
-    }
+    };
     /*
      *
      * CHECK FUNCTIONS
      *
      */
-    p.checkForEnemySpawn = function (time) {
+    p.checkForEnemySpawn = function(time) {
         if (time - this.enemyLastSpawnTime > this.enemySpawnWaiter) {
             this.spawnEnemyShip();
             this.enemyLastSpawnTime = time;
         }
-    }
-    p.checkForEnemyFire = function (time) {
+    };
+    p.checkForEnemyFire = function(time) {
         var enemy, i;
         var len = this.enemies.length - 1;
         for (i = len; i >= 0; i--) {
@@ -319,8 +320,8 @@
                 enemy.lastFired = time;
             }
         }
-    }
-    p.checkHeroBullets = function () {
+    };
+    p.checkHeroBullets = function() {
         var i, b, bullet, enemy, collision;
         for (i in this.enemies) {
             enemy = this.enemies[i];
@@ -333,8 +334,8 @@
                 }
             }
         }
-    }
-    p.checkEnemyBullets = function () {
+    };
+    p.checkEnemyBullets = function() {
         var b, bullet, collision;
         for (b in this.enemyBullets) {
             bullet = this.enemyBullets[b];
@@ -345,8 +346,8 @@
                 this.healthMeter.takeDamage(10);
             }
         }
-    }
-    p.checkShips = function () {
+    };
+    p.checkShips = function() {
         var enemy, i;
         var len = this.enemies.length - 1;
         for (i = len; i >= 0; i--) {
@@ -362,63 +363,77 @@
                 }
             }
         }
-    }
-    p.checkHealth = function (e) {
+    };
+    p.checkHealth = function(e) {
         if (this.healthMeter.empty) {
             this.heroShip.shouldDie = true;
         } else {
             this.healthMeter.regenerateHealth(this.delta / 500);
         }
-    }
-    p.checkHero = function () {
+    };
+    p.checkHero = function() {
+
+        var perc = this.healthMeter.getDamagePercent();
+        this.heroShip.fireDelay = this.heroShip.INITIAL_FIRE_DELAY + (perc * this.heroShip.MAX_FIRE_DELAY);
+        // console.log('getDamagePercent(), firedelay', perc, this.heroShip.fireDelay);
+
         if (this.heroShip.shouldDie) {
             this.numLives--;
             this.heroShip.explode();
             this.lifeBox.removeLife();
             this.betweenLevels = true;
         }
-    }
-    p.checkGame = function (e) {
-        if (this.numLives > 0) {
-            this.heroShip.reset();
-            this.heroShip.makeInvincible(true);
-            this.healthMeter.reset();
-            this.betweenLevels = false;
+    };
+    p.checkGame = function(e) {
+            if (this.numLives > 0) {
+                this.heroShip.reset();
+                this.heroShip.makeInvincible(true);
+                this.healthMeter.reset();
+                this.betweenLevels = false;
+            } else {
+                game.score = this.scoreboard.getScore();
+                this.dispose();
+                this.dispatchEvent(game.GameStateEvents.GAME_OVER);
+            }
         }
-        else {
-            game.score = this.scoreboard.getScore();
-            this.dispose();
-            this.dispatchEvent(game.GameStateEvents.GAME_OVER);
-        }
-    }
-    /*
-     *
-     * SPAWN FUNCTION
-     *
-     */
-    p.spawnEnemyShip = function () {
+        /*
+         *
+         * SPAWN FUNCTION
+         *
+         */
+    p.spawnEnemyShip = function() {
         var enemy = this.enemyPool.getSprite();
         enemy.y = Utils.getRandomNumber(enemy.getBounds().height, screen_height - enemy.getBounds().height);
         enemy.x = screen_width + enemy.getBounds().height;
         this.addChild(enemy);
         this.enemies.push(enemy);
-    }
-    p.spawnEnemyBullet = function (enemy) {
+    };
+    p.spawnEnemyBullet = function(enemy) {
         var bullet = this.enemyBulletPool.getSprite();
         bullet.currentAnimationFrame = 1;
         bullet.y = enemy.y;
         bullet.x = enemy.x;
         this.addChildAt(bullet, 0);
         this.enemyBullets.push(bullet);
-    }
-    p.spawnHeroBullet = function () {
-        var bullet = this.heroBulletPool.getSprite();
+    };
+    p.spawnHeroBullet = function() {
+
+        var player = this.heroShip,
+            time = createjs.Ticker.getTime(),
+            bullet;
+
+        if (time - player.lastFired < player.fireDelay) {
+            return;
+        }
+
+        player.lastFired = time;
+        bullet = this.heroBulletPool.getSprite();
         bullet.x = this.heroShip.x + this.heroShip.getBounds().height / 2;
         bullet.y = this.heroShip.y;
         this.addChildAt(bullet, 0);
-        this.heroBullets.push(bullet)
-    }
-    p.spawnEnemyExplosion = function (x, y) {
+        this.heroBullets.push(bullet);
+    };
+    p.spawnEnemyExplosion = function(x, y) {
         var explosion = this.explosionPool.getSprite();
         explosion.x = x - 45;
         explosion.y = y - 30;
@@ -426,39 +441,39 @@
         explosion.on('animationend', this.explosionComplete, this, true);
         explosion.play();
         createjs.Sound.play(game.assets.EXPLOSION);
-    }
-    p.explosionComplete = function (e) {
+    };
+    p.explosionComplete = function(e) {
         var explosion = e.target;
         this.removeChild(explosion);
         this.explosionPool.returnSprite(explosion);
-    }
-
+    };
     /*
      *
      * GAME LOOP
      *
      */
-    p.update = function () {
+    p.update = function() {
         this.updateStars();
-        this.updateHeroShip()
+        this.updateHeroShip();
         this.updateEnemies();
         this.updateHeroBullets();
         this.updateEnemyBullets();
-    }
-    p.render = function () {
+    };
+    p.render = function() {
         this.renderStars();
         this.renderHeroShip();
         this.renderEnemies();
         this.renderHeroBullets();
         this.renderEnemyBullets();
-    }
-    p.run = function (tickEvent) {
+    };
+    p.run = function(tickEvent) {
         this.delta = tickEvent.delta;
         if (!this.betweenLevels) {
             this.update();
             this.render();
             this.checkForEnemySpawn(tickEvent.time);
             this.checkForEnemyFire(tickEvent.time);
+            // this.checkForPlayerFire(tickEvent.time);
             this.checkHeroBullets();
             if (!this.heroShip.invincible) {
                 this.checkEnemyBullets();
@@ -467,11 +482,11 @@
             this.checkHealth();
             this.checkHero();
         }
-    }
-    p.dispose = function () {
+    };
+    p.dispose = function() {
         document.onkeydown = null;
         document.onkeyup = null;
-    }
+    };
     window.game.Game = Game;
 
 }(window));
