@@ -1,6 +1,6 @@
 (function(window) {
 
-    window.game = window.game || {}
+    window.game = window.game || {};
 
     function Game() {
         this.initialize();
@@ -160,7 +160,7 @@
             velX = star.speed * this.delta / 1000;
             nextX = star.x - velX;
             if (nextX < 0) {
-                nextX = screen_width + 10
+                nextX = screen_width + 10;
             }
             star.nextX = nextX;
         }
@@ -385,22 +385,22 @@
         }
     };
     p.checkGame = function(e) {
-            if (this.numLives > 0) {
-                this.heroShip.reset();
-                this.heroShip.makeInvincible(true);
-                this.healthMeter.reset();
-                this.betweenLevels = false;
-            } else {
-                game.score = this.scoreboard.getScore();
-                this.dispose();
-                this.dispatchEvent(game.GameStateEvents.GAME_OVER);
-            }
+        if (this.numLives > 0) {
+            this.heroShip.reset();
+            this.heroShip.makeInvincible(true);
+            this.healthMeter.reset();
+            this.betweenLevels = false;
+        } else {
+            game.score = this.scoreboard.getScore();
+            this.dispose();
+            this.dispatchEvent(game.GameStateEvents.GAME_OVER);
         }
-        /*
-         *
-         * SPAWN FUNCTION
-         *
-         */
+    };
+    /*
+     *
+     * SPAWN FUNCTION
+     *
+     */
     p.spawnEnemyShip = function() {
         var enemy = this.enemyPool.getSprite();
         enemy.y = Utils.getRandomNumber(enemy.getBounds().height, screen_height - enemy.getBounds().height);
