@@ -10,10 +10,10 @@
 
     p.Container_initialize = p.initialize;
 
-    // Hero
-    p.heroShip = null;
-    p.heroBulletPool = null;
-    p.heroBullets = null;
+    // Player
+    p.PlayerCar = null;
+    p.PlayerBulletPool = null;
+    p.PlayerBullets = null;
 
     // Enemies
     p.enemyPool = null;
@@ -52,11 +52,12 @@
         this.buildSprites();
         this.setWalls();
         this.setControls();
-        createjs.Sound.play(game.assets.SOUNDTRACK);
+        if(window.game.main.playSound)
+            createjs.Sound.play(game.assets.SOUNDTRACK);
     };
     p.setProperties = function() {
-        this.heroBulletPool = [];
-        this.heroBullets = [];
+        this.PlayerBulletPool = [];
+        this.PlayerBullets = [];
         this.enemyPool = [];
         this.enemies = [];
         this.enemyBulletPool = [];
@@ -79,24 +80,24 @@
         }
     };
     p.buildSprites = function() {
-        this.heroShip = new game.HeroShip();
-        this.heroShip.on(this.heroShip.EXPLOSION_COMPLETE, this.checkGame, this);
-        this.heroShip.x = this.heroShip.getBounds().height / 2;
-        this.heroShip.y = screen_height / 2;
-        this.heroBulletPool = new game.SpritePool(game.Bullet, 20);
+        this.PlayerCar = new game.PlayerCar();
+        this.PlayerCar.on(this.PlayerCar.EXPLOSION_COMPLETE, this.checkGame, this);
+        this.PlayerCar.x = this.PlayerCar.getBounds().height / 2;
+        this.PlayerCar.y = screen_height / 2;
+        this.PlayerBulletPool = new game.SpritePool(game.Bullet, 20);
         this.enemyBulletPool = new game.SpritePool(game.Bullet, 20);
-        this.enemyPool = new game.SpritePool(game.EnemyShip, 10);
+        this.enemyPool = new game.SpritePool(game.EnemyCar, 10);
         this.explosionPool = new game.SpritePool(game.Explosion, 10);
         this.healthMeter = new game.HealthMeter();
         this.scoreboard = new game.Scoreboard();
         this.lifeBox = new game.LifeBox(this.numLives);
-        this.addChild(this.heroShip, this.healthMeter, this.scoreboard, this.lifeBox);
+        this.addChild(this.PlayerCar, this.healthMeter, this.scoreboard, this.lifeBox);
     };
     p.setWalls = function() {
-        this.leftWall = this.heroShip.getBounds().height / 2;
-        this.rightWall = (this.heroShip.getBounds().height * 3);
-        this.floor = screen_height - this.heroShip.getBounds().width / 2;
-        this.ceiling = this.heroShip.getBounds().width / 2;
+        this.leftWall = this.PlayerCar.getBounds().height / 2;
+        this.rightWall = (this.PlayerCar.getBounds().height * 3);
+        this.floor = screen_height - this.PlayerCar.getBounds().width / 2;
+        this.ceiling = this.PlayerCar.getBounds().width / 2;
     };
     p.setControls = function() {
         document.onkeydown = this.handleKeyDown.bind(this);
@@ -119,10 +120,10 @@
                 this.downKeyDown = true;
                 break;
             case SPACE_KEY:
-                this.spawnHeroBullet();
+                this.spawnPlayerBullet();
                 break;
             case F_KEY:
-                this.spawnHeroBullet();
+                this.spawnPlayerBullet();
                 break;
             default:
                 console.log('key down', e.keyCode);
@@ -165,10 +166,10 @@
             star.nextX = nextX;
         }
     };
-    p.updateHeroShip = function() {
-        var velocity = this.heroShip.speed * this.delta / 1000;
-        var nextX = this.heroShip.x;
-        var nextY = this.heroShip.y;
+    p.updatePlayerCar = function() {
+        var velocity = this.PlayerCar.speed * this.delta / 1000;
+        var nextX = this.PlayerCar.x;
+        var nextY = this.PlayerCar.y;
         if (this.leftKeyDown) {
             nextX -= velocity;
             if (nextX < this.leftWall) {
@@ -190,8 +191,8 @@
                 nextY = this.ceiling;
             }
         }
-        this.heroShip.nextX = nextX;
-        this.heroShip.nextY = nextY;
+        this.PlayerCar.nextX = nextX;
+        this.PlayerCar.nextY = nextY;
     };
     p.updateEnemies = function() {
         var enemy, i, velX;
@@ -208,17 +209,17 @@
             }
         }
     };
-    p.updateHeroBullets = function() {
+    p.updatePlayerBullets = function() {
         var bullet, i, velX;
-        var len = this.heroBullets.length - 1;
+        var len = this.PlayerBullets.length - 1;
         for (i = len; i >= 0; i--) {
-            bullet = this.heroBullets[i];
+            bullet = this.PlayerBullets[i];
             velX = bullet.speed * this.delta / 1000;
             bullet.nextX = bullet.x + velX;
             if (bullet.nextX > screen_width) {
-                this.heroBulletPool.returnSprite(bullet);
+                this.PlayerBulletPool.returnSprite(bullet);
                 this.removeChild(bullet);
-                this.heroBullets.splice(i, 1);
+                this.PlayerBullets.splice(i, 1);
             }
         }
     };
@@ -248,20 +249,20 @@
             star.y = star.nextY;
         }
     };
-    p.renderHeroShip = function() {
-        this.heroShip.x = this.heroShip.nextX;
-        this.heroShip.y = this.heroShip.nextY;
+    p.renderPlayerCar = function() {
+        this.PlayerCar.x = this.PlayerCar.nextX;
+        this.PlayerCar.y = this.PlayerCar.nextY;
     };
-    p.renderHeroBullets = function() {
+    p.renderPlayerBullets = function() {
         var bullet, i;
-        var len = this.heroBullets.length - 1;
+        var len = this.PlayerBullets.length - 1;
         for (i = len; i >= 0; i--) {
-            bullet = this.heroBullets[i];
+            bullet = this.PlayerBullets[i];
             if (bullet.shouldDie) {
                 this.removeChild(bullet);
                 bullet.reset();
-                this.heroBulletPool.returnSprite(bullet);
-                this.heroBullets.splice(i, 1);
+                this.PlayerBulletPool.returnSprite(bullet);
+                this.PlayerBullets.splice(i, 1);
             } else {
                 bullet.x = bullet.nextX;
             }
@@ -306,7 +307,7 @@
      */
     p.checkForEnemySpawn = function(time) {
         if (time - this.enemyLastSpawnTime > this.enemySpawnWaiter) {
-            this.spawnEnemyShip();
+            this.spawnEnemyCar();
             this.enemyLastSpawnTime = time;
         }
     };
@@ -321,12 +322,12 @@
             }
         }
     };
-    p.checkHeroBullets = function() {
+    p.checkPlayerBullets = function() {
         var i, b, bullet, enemy, collision;
         for (i in this.enemies) {
             enemy = this.enemies[i];
-            for (b in this.heroBullets) {
-                bullet = this.heroBullets[b];
+            for (b in this.PlayerBullets) {
+                bullet = this.PlayerBullets[b];
                 collision = ndgmr.checkPixelCollision(enemy, bullet);
                 if (collision) {
                     enemy.takeDamage();
@@ -339,26 +340,26 @@
         var b, bullet, collision;
         for (b in this.enemyBullets) {
             bullet = this.enemyBullets[b];
-            collision = ndgmr.checkPixelCollision(this.heroShip, bullet);
+            collision = ndgmr.checkPixelCollision(this.PlayerCar, bullet);
             if (collision) {
                 bullet.shouldDie = true;
-                this.heroShip.takeDamage();
+                this.PlayerCar.takeDamage();
                 this.healthMeter.takeDamage(10);
             }
         }
     };
-    p.checkShips = function() {
+    p.checkCars = function() {
         var enemy, i;
         var len = this.enemies.length - 1;
         for (i = len; i >= 0; i--) {
             enemy = this.enemies[i];
             if (enemy.x < screen_width / 2) {
-                collision = ndgmr.checkPixelCollision(this.heroShip, enemy);
+                collision = ndgmr.checkPixelCollision(this.PlayerCar, enemy);
                 if (collision) {
                     this.removeChild(enemy);
                     this.enemies.splice(i, 1);
                     this.spawnEnemyExplosion(enemy.x, enemy.y);
-                    this.heroShip.shouldDie = true;
+                    this.PlayerCar.shouldDie = true;
                     break;
                 }
             }
@@ -366,28 +367,28 @@
     };
     p.checkHealth = function(e) {
         if (this.healthMeter.empty) {
-            this.heroShip.shouldDie = true;
+            this.PlayerCar.shouldDie = true;
         } else {
             this.healthMeter.regenerateHealth(this.delta / 500);
         }
     };
-    p.checkHero = function() {
+    p.checkPlayer = function() {
 
         var perc = this.healthMeter.getDamagePercent();
-        this.heroShip.fireDelay = this.heroShip.INITIAL_FIRE_DELAY + (perc * this.heroShip.MAX_FIRE_DELAY);
-        // console.log('getDamagePercent(), firedelay', perc, this.heroShip.fireDelay);
+        this.PlayerCar.fireDelay = this.PlayerCar.INITIAL_FIRE_DELAY + (perc * this.PlayerCar.MAX_FIRE_DELAY);
+        // console.log('getDamagePercent(), firedelay', perc, this.PlayerCar.fireDelay);
 
-        if (this.heroShip.shouldDie) {
+        if (this.PlayerCar.shouldDie) {
             this.numLives--;
-            this.heroShip.explode();
+            this.PlayerCar.explode();
             this.lifeBox.removeLife();
             this.betweenLevels = true;
         }
     };
     p.checkGame = function(e) {
         if (this.numLives > 0) {
-            this.heroShip.reset();
-            this.heroShip.makeInvincible(true);
+            this.PlayerCar.reset();
+            this.PlayerCar.makeInvincible(true);
             this.healthMeter.reset();
             this.betweenLevels = false;
         } else {
@@ -401,7 +402,7 @@
      * SPAWN FUNCTION
      *
      */
-    p.spawnEnemyShip = function() {
+    p.spawnEnemyCar = function() {
         var enemy = this.enemyPool.getSprite();
         enemy.y = Utils.getRandomNumber(enemy.getBounds().height, screen_height - enemy.getBounds().height);
         enemy.x = screen_width + enemy.getBounds().height;
@@ -416,9 +417,9 @@
         this.addChildAt(bullet, 0);
         this.enemyBullets.push(bullet);
     };
-    p.spawnHeroBullet = function() {
+    p.spawnPlayerBullet = function() {
 
-        var player = this.heroShip,
+        var player = this.PlayerCar,
             time = createjs.Ticker.getTime(),
             bullet;
 
@@ -427,11 +428,11 @@
         }
 
         player.lastFired = time;
-        bullet = this.heroBulletPool.getSprite();
-        bullet.x = this.heroShip.x + this.heroShip.getBounds().height / 2;
-        bullet.y = this.heroShip.y;
+        bullet = this.PlayerBulletPool.getSprite();
+        bullet.x = this.PlayerCar.x + this.PlayerCar.getBounds().height / 2;
+        bullet.y = this.PlayerCar.y;
         this.addChildAt(bullet, 0);
-        this.heroBullets.push(bullet);
+        this.PlayerBullets.push(bullet);
     };
     p.spawnEnemyExplosion = function(x, y) {
         var explosion = this.explosionPool.getSprite();
@@ -440,7 +441,8 @@
         this.addChild(explosion);
         explosion.on('animationend', this.explosionComplete, this, true);
         explosion.play();
-        createjs.Sound.play(game.assets.EXPLOSION);
+        if(window.game.main.playSound)
+            createjs.Sound.play(game.assets.EXPLOSION);
     };
     p.explosionComplete = function(e) {
         var explosion = e.target;
@@ -454,16 +456,16 @@
      */
     p.update = function() {
         this.updateStars();
-        this.updateHeroShip();
+        this.updatePlayerCar();
         this.updateEnemies();
-        this.updateHeroBullets();
+        this.updatePlayerBullets();
         this.updateEnemyBullets();
     };
     p.render = function() {
         this.renderStars();
-        this.renderHeroShip();
+        this.renderPlayerCar();
         this.renderEnemies();
-        this.renderHeroBullets();
+        this.renderPlayerBullets();
         this.renderEnemyBullets();
     };
     p.run = function(tickEvent) {
@@ -474,13 +476,13 @@
             this.checkForEnemySpawn(tickEvent.time);
             this.checkForEnemyFire(tickEvent.time);
             // this.checkForPlayerFire(tickEvent.time);
-            this.checkHeroBullets();
-            if (!this.heroShip.invincible) {
+            this.checkPlayerBullets();
+            if (!this.PlayerCar.invincible) {
                 this.checkEnemyBullets();
-                this.checkShips();
+                this.checkCars();
             }
             this.checkHealth();
-            this.checkHero();
+            this.checkPlayer();
         }
     };
     p.dispose = function() {
