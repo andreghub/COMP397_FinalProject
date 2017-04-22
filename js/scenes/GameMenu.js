@@ -69,7 +69,7 @@
     p.optionsScene = function(e) {
         this.dispatchEvent(game.GameStateEvents.OPTIONS_MENU);
     }
-    window.game.gameMenu = MainMenu;
+    window.game.MainMenu = MainMenu;
 
     function InstructionsMenu() {
         this.initialize();

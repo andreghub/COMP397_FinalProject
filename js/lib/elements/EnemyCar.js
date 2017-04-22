@@ -6,7 +6,6 @@
     }
 
     var p = EnemyCar.prototype = new createjs.Sprite();
-    var gameLevel = window.game.gameLevel;
 
     p.Sprite_initialize = p.initialize;
 
@@ -15,12 +14,13 @@
     p.points = null;
 
     p.lastFired = 0;
-    p.fireDelay = window.game.gameDefinitions[gameLevel || 'MEDIUM'].enemyFireDelay;
-    p.speed = window.game.gameDefinitions[gameLevel || 'MEDIUM'].enemySpeed;
     p.nextY = 0;
     p.shouldDie = false;
 
     p.initialize = function(startX) {
+
+        var gameLevel = window.game.main.gameLevel;
+
         this.type = Utils.getRandomNumber(0, 2) + 1;
         this.HP = this.type * 3;
         this.points = this.type * 100;
@@ -28,7 +28,8 @@
         this.regX = this.getBounds().width / 2;
         this.regY = this.getBounds().height / 2;
         this.rotation = 90;
-
+        this.fireDelay = window.game.gameDefinitions[gameLevel || 'MEDIUM'].enemyFireDelay;
+        this.speed = window.game.gameDefinitions[gameLevel || 'MEDIUM'].enemySpeed;
     }
     p.takeDamage = function() {
         this.gotoAndPlay("enemy" + this.type + "Hit");
