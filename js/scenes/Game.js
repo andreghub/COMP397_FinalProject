@@ -8,6 +8,21 @@
 
     var p = Game.prototype = new createjs.Container();
 
+    window.game.gameDefinitions = {
+        'EASY': {
+            enemySpeed: 110,
+            enemyFireDelay: 2300,
+        },
+        'MEDIUM': {
+            enemySpeed: 150,
+            enemyFireDelay: 2000,
+        },
+        'HARD': {
+            enemySpeed: 200,
+            enemyFireDelay: 1500,
+        },
+    };
+
     p.Container_initialize = p.initialize;
 
     // Player
@@ -52,7 +67,7 @@
         this.buildSprites();
         this.setWalls();
         this.setControls();
-        if(window.game.main.playSound)
+        if (window.game.main.playSound)
             createjs.Sound.play(game.assets.SOUNDTRACK);
     };
     p.setProperties = function() {
@@ -441,7 +456,7 @@
         this.addChild(explosion);
         explosion.on('animationend', this.explosionComplete, this, true);
         explosion.play();
-        if(window.game.main.playSound)
+        if (window.game.main.playSound)
             createjs.Sound.play(game.assets.EXPLOSION);
     };
     p.explosionComplete = function(e) {

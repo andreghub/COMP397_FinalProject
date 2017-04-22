@@ -59,7 +59,7 @@
         createjs.Tween.get(this.optionsBtn).to({ alpha: 1 }, 1000);
     }
     p.playGame = function(e) {
-        if(window.game.main.playSound)
+        if (window.game.main.playSound)
             createjs.Sound.play(game.assets.EXPLOSION);
         this.dispatchEvent(game.GameStateEvents.GAME);
     }
@@ -69,8 +69,7 @@
     p.optionsScene = function(e) {
         this.dispatchEvent(game.GameStateEvents.OPTIONS_MENU);
     }
-    window.game.MainMenu = MainMenu;
-
+    window.game.gameMenu = MainMenu;
 
     function InstructionsMenu() {
         this.initialize();
@@ -114,11 +113,10 @@
     p.bringTitle = function(e) {
         createjs.Tween.get(this.mainMenuBtn).to({ alpha: 1 }, 1000);
     }
-    p.mainMenu = function (e) {
+    p.mainMenu = function(e) {
         this.dispatchEvent(game.GameStateEvents.MAIN_MENU);
     }
     window.game.InstructionsMenu = InstructionsMenu;
-
 
     function OptionsMenu() {
         this.initialize();
@@ -177,23 +175,29 @@
         createjs.Tween.get(this.levelBtn).to({ alpha: 1 }, 1000);
         createjs.Tween.get(this.mainMenuBtn).to({ alpha: 1 }, 1000);
     }
-    p.toggleSound = function (e) {
+    p.toggleSound = function(e) {
         window.game.main.playSound = !window.game.main.playSound;
         this.soundBtn.label = "Sound: " + (window.game.main.playSound ? "on" : "off");
         this.soundBtn.drawButton();
         stage.update();
     }
-    p.changeLevel = function (e) {
-        switch(window.game.main.gameLevel){
-            case "EASY": window.game.main.gameLevel = 'MEDIUM'; break;
-            case "MEDIUM": window.game.main.gameLevel = 'HARD'; break;
-            case "HARD": window.game.main.gameLevel = 'EASY'; break;
+    p.changeLevel = function(e) {
+        switch (window.game.main.gameLevel) {
+            case "EASY":
+                window.game.main.gameLevel = 'MEDIUM';
+                break;
+            case "MEDIUM":
+                window.game.main.gameLevel = 'HARD';
+                break;
+            case "HARD":
+                window.game.main.gameLevel = 'EASY';
+                break;
         }
 
         this.levelBtn.label = 'Level: ' + window.game.main.gameLevel;
         this.levelBtn.drawButton();
     }
-    p.mainMenu = function (e) {
+    p.mainMenu = function(e) {
         this.dispatchEvent(game.GameStateEvents.MAIN_MENU);
     }
     window.game.OptionsMenu = OptionsMenu;

@@ -35,7 +35,7 @@
         this.gotoAndPlay('explosion');
         this.regX = this.regY = this.EXPLOSION_OFFSET;
         this.on('animationend', this.explosionComplete, this, true);
-        if(window.game.main.playSound)
+        if (window.game.main.playSound)
             createjs.Sound.play(game.assets.EXPLOSION);
     };
     p.explosionComplete = function(e) {

@@ -6,6 +6,7 @@
     }
 
     var p = EnemyCar.prototype = new createjs.Sprite();
+    var gameLevel = window.game.gameLevel;
 
     p.Sprite_initialize = p.initialize;
 
@@ -14,9 +15,8 @@
     p.points = null;
 
     p.lastFired = 0;
-    p.fireDelay = 2000;
-
-    p.speed = 150;
+    p.fireDelay = window.game.gameDefinitions[gameLevel || 'MEDIUM'].enemyFireDelay;
+    p.speed = window.game.gameDefinitions[gameLevel || 'MEDIUM'].enemySpeed;
     p.nextY = 0;
     p.shouldDie = false;
 

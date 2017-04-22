@@ -1,6 +1,6 @@
 (function(window) {
 
-    window.game = window.game || {}
+    window.game = window.game || {};
 
     function CrazyCars() {
         this.initialize();
@@ -13,7 +13,7 @@
     p.currentGameStateFunction;
     p.currentScene;
 
-    p.gameLevel;
+    p.gameLevel = 'MEDIUM';
     p.playSound;
 
     p.initialize = function() {
@@ -28,7 +28,7 @@
         game.assets = new game.AssetManager();
         this.gameLevel = "EASY";
         this.playSound = true;
-        this.preloadAssets()
+        this.preloadAssets();
     }
     p.preloadAssets = function() {
         this.preloader = new ui.Preloader('#d2354c', '#FFF');
