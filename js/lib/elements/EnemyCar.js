@@ -16,6 +16,7 @@
     p.lastFired = 0;
     p.nextY = 0;
     p.shouldDie = false;
+    p.gotHit = false;
 
     p.initialize = function(startX) {
 
@@ -36,11 +37,14 @@
         this.HP--;
         if (this.HP <= 0) {
             this.shouldDie = true;
+        } else {
+            this.gotHit = true;
         }
     }
     p.reset = function() {
         this.type = Utils.getRandomNumber(0, 2) + 1;
         this.shouldDie = false;
+        this.gotHit = false;
         this.HP = this.type * 3;
         this.points = this.type * 100;
         this.gotoAndPlay("enemy" + this.type + "Idle");

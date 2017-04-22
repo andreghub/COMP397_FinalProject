@@ -312,6 +312,11 @@
                 this.enemyPool.returnSprite(enemy);
             } else {
                 enemy.x = enemy.nextX;
+
+                if (enemy.gotHit) {
+                    this.scoreboard.updateScore(enemy.points / 10);
+                    enemy.gotHit = false;
+                }
             }
         }
     };
